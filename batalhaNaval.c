@@ -1,47 +1,122 @@
 #include <stdio.h>
 
-int main()
-{
-    char *linhas[10] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
-    int tabuleiro[10][10];
+int main() {
 
-    // Inicializa o tabuleiro com zeros (isso so prepara o tabuleiro com 0 ele nao aparece em cima das letra pq n dei um print f)
-    for (int i = 0; i < 10; i++) // serve pra começar a linha com um 0
+    int tabuleiro[10][10];
+    char letras[10] = {'A','B','C','D','E','F','G','H','I','J'};
+
+
+    for (int i = 0; i <10; i++)
     {
-        for (int j = 0; j < 10; j++) // serve pra completar a linha com  0 depois o i recomeça e faz outar linha com 0
+        for (int j = 0; j <10; j++)
         {
-            tabuleiro[j][i] = 0; // Isso serve para definir que cada posição específica por exemplo tem que começar em 0 pra ser a agua da batalha naval, pode muda isso pra 3 4 pra ser o navio depois mas no começo tem que ser 0
+            tabuleiro[i][j] = 0;
+        }
+        
+    }
+
+
+    tabuleiro[0][0] = 3;
+    tabuleiro[1][1] = 3;
+    tabuleiro[2][2] = 3;
+
+    tabuleiro[9][9] = 3;
+    tabuleiro[8][8] = 3;
+    tabuleiro[7][7] = 3;
+
+    // ====== Habilidades ======
+
+    // matrizes de habilidade
+    int cone[5][5];
+    int cruz[5][5];
+    int octaedro[5][5];
+
+    
+    for (int i = 0; i < 5; i++) // linha
+    {
+        for (int j = 0; j < 5; j++) // coluna
+        {
+            if (j >= 2 - i && j <= 2 + i) // Forma do cone
+                cone[i][j] = 1;
+            else
+                cone[i][j] = 0;
         }
     }
 
-    // Coloca o navio onde voce quer horizontalmente ou seja no i
-    tabuleiro[2][4] = 3;
-    tabuleiro[2][5] = 3;
-    tabuleiro[2][6] = 3;
-
-    // isso pra vertical ou seja pro j
-    tabuleiro[5][8] = 3;
-    tabuleiro[6][8] = 3;
-    tabuleiro[7][8] = 3;
-
-    // Imprime o cabeçalho com as letras
-    printf("   ");               // isso da um espaço pro a fica em cima do 0 e nao do 1
-    for (int i = 0; i < 10; i++) // aqui imprime o A até o J em uma linha reta
+    
+    for (int i = 0; i < 5; i++)
     {
-        printf("%s ", linhas[i]); // coloca o i pq ele que ta imprimindo tudo ali em cima
+        for (int j = 0; j < 5; j++)
+        {
+            if (i == 2 || j == 2) // Linha do meio ou coluna do meio
+                cruz[i][j] = 1;
+            else
+                cruz[i][j] = 0;
+        }
+    }
+
+    
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            
+            if ((i == 0 && j == 2) ||
+                (i == 1 && (j == 1 || j == 2 || j == 3)) ||
+                (i == 2) ||
+                (i == 3 && (j == 1 || j == 2 || j == 3)) ||
+                (i == 4 && j == 2)) {
+                octaedro[i][j] = 1;
+            } else {
+                octaedro[i][j] = 0;
+            }
+        }
+    }
+
+    
+    int origem_linha = 4;
+    int origem_coluna = 4;
+
+    // Aplicar a habilidade 
+    for (int i = 0; i < 5; i++) 
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            int tab_linha = origem_linha - 2 + i; 
+            int tab_coluna = origem_coluna - 2 + j;
+
+            if (tab_linha >= 0 && tab_linha < 10 && tab_coluna >= 0 && tab_coluna < 10) 
+            {
+                if (cone[i][j] == 1 && tabuleiro[tab_linha][tab_coluna] == 0) 
+                {
+                    tabuleiro[tab_linha][tab_coluna] = 5; 
+                }
+            }
+        }
+    }
+
+   
+
+
+    printf("   "); 
+    for (int i = 0; i <10; i++)
+    {
+            printf("%c ", letras[i]);
     }
     printf("\n");
-
-    for (int i = 0; i < 10; i++) // imprime os numeros de 1 até 10 do lado do tabuleiro ta 1 e 11 ali pq se tiver 0 começa no 0 e vai até o 9 se tiver 1 começa no 1 e vai até o 9  mas se tiver 1 e 11 vai do 1 a 10
+    
+    for (int i = 0; i <10; i++)
     {
-        printf("%2d ", i + 1); // aq imprime os numeros de 1 a 10 tem um %2d pra alinhar os numeros e fica bonito
+        printf("%2d ", i + 1); // Número da linha (de 1 até 10) nao ta ligado ao vetor é so pra indicar.
 
-        for (int j = 0; j < 10; j++) // ele vai imprimir 10 vezes o número 0, do lado de 1 2 3 etc
+        for (int j = 0; j <10; j++)
         {
-            printf("%d ", tabuleiro[i][j]); // aqui imprime os navios
+            printf("%2d", tabuleiro[i][j]); // aq sim ta ligado ao vetor.
         }
         printf("\n");
+        
     }
-
+    
+    
+// erros cometidos nao coloquei \n apos as letras ai o 0 ficava junto e nao coloquei \n depois do ciclo de cada 
+// i dai os 0 ficavam um do lado do outro, e pelo visto, tambem nao soube colocar a numeração de 1 a 10 no canto 
     return 0;
 }
